@@ -1,0 +1,19 @@
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.tickerDataWrapper {
+  margin: 0 auto;
+  width: 50%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  span {
+    width: 30%;
+    text-align: center;
+  }
+}
