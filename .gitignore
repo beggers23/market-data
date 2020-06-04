@@ -10,6 +10,7 @@
 
 # production
 /build
+/src/mocks
 
 # misc
 .DS_Store
