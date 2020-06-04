@@ -67,7 +67,7 @@ function App() {
   };
 
   return (
-    <Grid container item xs={12} sm={8} md={7} lg={6} justify="center">
+    <Grid container item xs={12} sm={8} md={7} lg={4} justify="center">
       <List className={classes.listContainer}>
         {marketData.map((ticker) => {
           const {
