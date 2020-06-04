@@ -13,8 +13,6 @@ import TrendingDown from "@material-ui/icons/TrendingDown";
 import TrendingFlat from "@material-ui/icons/TrendingFlat";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
-
-import res from "./mocks/response.mock.json";
 const { API_URL, API_HOST, API_KEY } = window;
 
 const useStyles = makeStyles((theme) => ({
@@ -37,17 +35,22 @@ function App() {
   const [marketData, setMarketData] = useState([]);
 
   const grabMarketData = async () => {
-    // const req = await fetch(API_URL, {
-    //   method: "GET",
-    //   headers: {
-    //     "x-rapidapi-host": API_HOST,
-    //     "x-rapidapi-key": API_KEY,
-    //     useQueryString: true,
-    //   },
-    // });
-    // const res = await req.json();
-    if (res) {
-      setMarketData(res.marketSummaryResponse.result);
+    if (process.env.NODE_ENV === "development") {
+      const res = require("./mocks/response.mock.json");
+      return setMarketData([...res.result]);
+    } else {
+      const req = await fetch(API_URL, {
+        method: "GET",
+        headers: {
+          "x-rapidapi-host": API_HOST,
+          "x-rapidapi-key": API_KEY,
+          useQueryString: true,
+        },
+      });
+      const res = await req.json();
+      if (res) {
+        setMarketData(res.marketSummaryResponse.result);
+      }
     }
   };
 
