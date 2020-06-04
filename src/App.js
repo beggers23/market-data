@@ -10,10 +10,6 @@ import TrendingUp from "@material-ui/icons/TrendingUp";
 import TrendingDown from "@material-ui/icons/TrendingDown";
 import TrendingFlat from "@material-ui/icons/TrendingFlat";
 
-import { WantedTickers } from "./utils/helpers";
-
-import res from "./mocks/response.mock.json";
-
 const { API_URL, API_HOST, API_KEY } = window;
 
 const useStyles = makeStyles((theme) => ({
@@ -34,23 +30,20 @@ const useStyles = makeStyles((theme) => ({
 function App() {
   const classes = useStyles();
   const [marketData, setMarketData] = useState([]);
-  const filterTickers = (arr) =>
-    arr.filter((i) => WantedTickers.includes(i.shortName));
 
   useEffect(() => {
     const grabMarketData = async () => {
-      // const req = await fetch(API_URL, {
-      //   method: "GET",
-      //   headers: {
-      //     "x-rapidapi-host": API_HOST,
-      //     "x-rapidapi-key": API_KEY,
-      //     useQueryString: true,
-      //   },
-      // });
-      // const res = await req.json();
+      const req = await fetch(API_URL, {
+        method: "GET",
+        headers: {
+          "x-rapidapi-host": API_HOST,
+          "x-rapidapi-key": API_KEY,
+          useQueryString: true,
+        },
+      });
+      const res = await req.json();
       if (res) {
-        const filteredTickers = filterTickers(res.marketSummaryResponse.result);
-        setMarketData(filteredTickers);
+        setMarketData(res.marketSummaryResponse.result);
       }
     };
     grabMarketData();
@@ -60,15 +53,20 @@ function App() {
     <Grid container item xs={12} sm={6} md={4} justify="center">
       <List className={classes.listContainer}>
         {marketData.map((ticker) => {
+          const {
+            regularMarketChangePercent,
+            symbol,
+            shortName,
+            regularMarketPrice,
+          } = ticker;
           const getStatus = (delta) => {
             if (delta > 0) return "positive";
             if (delta < 0) return "negative";
             else return "neutral";
           };
-
           const status = getStatus(ticker.regularMarketChangePercent.raw);
           return (
-            <React.Fragment key={ticker.symbol}>
+            <React.Fragment key={symbol}>
               <ListItem>
                 <ListItemIcon>
                   {status === "positive" ? (
@@ -81,15 +79,15 @@ function App() {
                 </ListItemIcon>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
-                    <Typography>{ticker.shortName}</Typography>
+                    <Typography>{shortName}</Typography>
                   </Grid>
                   <Grid item xs={4}>
-                    <Typography>{ticker.regularMarketPrice.fmt}</Typography>
+                    <Typography>{regularMarketPrice.fmt}</Typography>
                   </Grid>
                   <Grid item xs={4}>
                     <Typography className={classes[status]}>
                       {status === "positive" && "+"}
-                      {ticker.regularMarketChangePercent.fmt}
+                      {regularMarketChangePercent.fmt}
                     </Typography>
                   </Grid>
                 </Grid>
