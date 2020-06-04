@@ -4,12 +4,17 @@ import Grid from "@material-ui/core/Grid";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
 import TrendingUp from "@material-ui/icons/TrendingUp";
 import TrendingDown from "@material-ui/icons/TrendingDown";
 import TrendingFlat from "@material-ui/icons/TrendingFlat";
+import DeleteIcon from "@material-ui/icons/Delete";
+import Button from "@material-ui/core/Button";
 
+import res from "./mocks/response.mock.json";
 const { API_URL, API_HOST, API_KEY } = window;
 
 const useStyles = makeStyles((theme) => ({
@@ -31,26 +36,34 @@ function App() {
   const classes = useStyles();
   const [marketData, setMarketData] = useState([]);
 
+  const grabMarketData = async () => {
+    // const req = await fetch(API_URL, {
+    //   method: "GET",
+    //   headers: {
+    //     "x-rapidapi-host": API_HOST,
+    //     "x-rapidapi-key": API_KEY,
+    //     useQueryString: true,
+    //   },
+    // });
+    // const res = await req.json();
+    if (res) {
+      setMarketData(res.marketSummaryResponse.result);
+    }
+  };
+
   useEffect(() => {
-    const grabMarketData = async () => {
-      const req = await fetch(API_URL, {
-        method: "GET",
-        headers: {
-          "x-rapidapi-host": API_HOST,
-          "x-rapidapi-key": API_KEY,
-          useQueryString: true,
-        },
-      });
-      const res = await req.json();
-      if (res) {
-        setMarketData(res.marketSummaryResponse.result);
-      }
-    };
     grabMarketData();
   }, []);
 
+  const handleRemoveOfItem = (ticker) => {
+    const newMarketData = [...marketData];
+    const indexToSplice = newMarketData.indexOf(ticker);
+    newMarketData.splice(indexToSplice, 1);
+    setMarketData([...newMarketData]);
+  };
+
   return (
-    <Grid container item xs={12} sm={6} md={4} justify="center">
+    <Grid container item xs={12} sm={8} md={7} lg={6} justify="center">
       <List className={classes.listContainer}>
         {marketData.map((ticker) => {
           const {
@@ -91,12 +104,18 @@ function App() {
                     </Typography>
                   </Grid>
                 </Grid>
+                <ListItemSecondaryAction>
+                  <IconButton onClick={() => handleRemoveOfItem(ticker)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </ListItemSecondaryAction>
               </ListItem>
               <Divider />
             </React.Fragment>
           );
         })}
       </List>
+      <Button onClick={grabMarketData}>Refresh Data</Button>
     </Grid>
   );
 }
