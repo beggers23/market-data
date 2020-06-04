@@ -13,6 +13,7 @@ import TrendingDown from "@material-ui/icons/TrendingDown";
 import TrendingFlat from "@material-ui/icons/TrendingFlat";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Button from "@material-ui/core/Button";
+
 const { API_URL, API_HOST, API_KEY } = window;
 
 const useStyles = makeStyles((theme) => ({
